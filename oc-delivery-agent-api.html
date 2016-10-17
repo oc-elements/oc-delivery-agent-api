@@ -9,6 +9,11 @@ Element to consume Ordercloud delivery agent API.
 
   <template>
     <iron-ajax id="getDeliveryAgents"></iron-ajax>
+    <iron-ajax id="getDeliveryAgentsWithBalance"></iron-ajax>
+    <iron-ajax id="updateAgentStatus"></iron-ajax>
+    <iron-ajax id="getAgentStatuses"></iron-ajax>
+    <iron-ajax id="topup"></iron-ajax>
+    <iron-ajax id="cashup"></iron-ajax>
   </template>
 
   <script>
@@ -26,14 +31,82 @@ Element to consume Ordercloud delivery agent API.
          * @return {Promise}
          */
         getDeliveryAgents: function(organisationId, criteria) {
-          this.$.getDeliveryAgents.url = this._url('delivery_agent/organisation/' + organisationId);
+          this.$.getDeliveryAgents.url = this._url('organisations/fraud/deliveryagent/{id}');
           this.$.getDeliveryAgents.params = {
             page: criteria.page || 1,
             pagesize: criteria.pageSize || 20,
             status: criteria.statuses || []
           };
           return this._generateRequest(this.$.getDeliveryAgents);
-        }
+        },
+
+        /**
+         * Gets a list of balances for all delivery agents for an organisation
+         *
+         * @return {Promise}
+         */
+        getDeliveryAgentsWithBalance: function(organisationId, criteria) {
+          this.$.getDeliveryAgentsWithBalance.url = this._url('/delivery_agent/balance');
+          return this._generateRequest(this.$.getDeliveryAgentsWithBalance);
+        },
+
+        /**
+         * Gets a list of available statusses for a delivery agent
+         *
+         * @return {Promise}
+         */
+        getAgentStatuses: function() {
+          this.$.getAgentStatuses.url = this._url('/delivery_agent/status');
+          return this._generateRequest(this.$.getAgentStatuses);
+        },
+
+        /**
+         * Update a delivery agents status
+         *
+         * @param {Number} organisationId
+         * @param {Number} agentId
+         * @param {Number} statusId
+         *
+         * @return {Promise}
+         */
+        updateAgentStatus: function(organisationId, agentId, statusId) {
+          this.$.updateAgentStatus.url = this._url('/delivery_agent/'+agentId+'/organisation/'+organisationId+'/status/'+statusId);
+          this.$.updateAgentStatus.method = "PUT";
+          this.$.updateAgentStatus.contentType = "application/json";
+          return this._generateRequest(this.$.updateAgentStatus);
+        },
+
+        /**
+         * Debit delivery agent with specified amount
+         *
+         * @param {Number} organisationId
+         * @param {Number} agentId
+         * @param {Number} amount
+         *
+         * @return {Promise}
+         */
+        topup: function(organisationId, agentId, amount) {
+          this.$.topup.url = this._url('/delivery_agent/'+agentId+'/organisation/'+organisationId+'/topup/'+amount);
+          this.$.topup.method = "PUT";
+          this.$.topup.contentType = "application/json";
+          return this._generateRequest(this.$.topup);
+        },
+
+        /**
+         * Credit delivery agent with specified amount
+         *
+         * @param {Number} organisationId
+         * @param {Number} agentId
+         * @param {Number} amount
+         *
+         * @return {Promise}
+         */
+        cashup: function(organisationId, agentId, amount) {
+          this.$.cashup.url = this._url('/delivery_agent/'+agentId+'/organisation/'+organisationId+'/cashup/'+amount);
+          this.$.cashup.method = "PUT";
+          this.$.cashup.contentType = "application/json";
+          return this._generateRequest(this.$.cashup);
+        },
 
       });
     })();
