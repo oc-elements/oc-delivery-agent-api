@@ -14,6 +14,7 @@ Element to consume Ordercloud delivery agent API.
     <iron-ajax id="getAgentStatuses"></iron-ajax>
     <iron-ajax id="topup"></iron-ajax>
     <iron-ajax id="cashup"></iron-ajax>
+    <iron-ajax id="getTransactions"></iron-ajax>
   </template>
 
   <script>
@@ -106,6 +107,24 @@ Element to consume Ordercloud delivery agent API.
           this.$.cashup.method = "PUT";
           this.$.cashup.contentType = "application/json";
           return this._generateRequest(this.$.cashup);
+        },
+
+        /**
+         * Retrieve transactions for a delivery agent, with the given parameters
+         *
+         * @param {Number} organisationId
+         * @param {Number} agentId
+         * @param {{ page: Number, pageSize: Number, statuses: Number[] }} criteria
+         *
+         * @return {Promise}
+         */
+        getTransactions: function(organisationId, agentId, criteria) {
+          this.$.getTransactions.url = this._url('delivery_agent/'+agentId+'/organisation/'+organisationId+'/transactions');
+          this.$.getTransactions.params = {
+            page: criteria.page || 1,
+            pagesize: criteria.pageSize || 20
+          };
+          return this._generateRequest(this.$.getTransactions);
         },
 
       });
