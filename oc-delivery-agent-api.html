@@ -154,7 +154,7 @@ Element to consume Ordercloud delivery agent API.
          * @return {Promise}
          */
         updateBalanceLimits: function(organisationId, agentId, min, max) {
-          this.$.updateBalanceLimits.url = this._url('/delivery_agent/'+agentId+'/organisation/'+orgId+'/limits?min='+min+'&max='+max);
+          this.$.updateBalanceLimits.url = this._url('/delivery_agent/'+agentId+'/organisation/'+organisationId+'/limits?min='+min+'&max='+max);
           this.$.updateBalanceLimits.method = "PUT";
           this.$.updateBalanceLimits.contentType = "application/json";
           return this._generateRequest(this.$.updateBalanceLimits);
@@ -172,8 +172,8 @@ Element to consume Ordercloud delivery agent API.
          */
         updateAccounts: function(organisationId, agentId, bankAccNo, cardNo) {
 
-            var formattedBankAccNo = (bankAccNo.length !== 6) ? bankAccNo.slice(-6) : bankAccNo;
-            var formattedCardNo = (cardNo.length !== 4) ? cardNo.slice(-4) : cardNo;
+          var formattedBankAccNo = (bankAccNo.length !== 6) ? bankAccNo.slice(-6) : bankAccNo;
+          var formattedCardNo = (cardNo.length !== 4) ? cardNo.slice(-4) : cardNo;
 
           this.$.updateAccounts.url = this._url('delivery_agent/'+agentId+'/organisation/'+organisationId+'/accounts?bankAccNo='+formattedBankAccNo+'&cardNo='+formattedCardNo);
           this.$.updateAccounts.method = "PUT";
