@@ -15,6 +15,9 @@ Element to consume Ordercloud delivery agent API.
     <iron-ajax id="topup"></iron-ajax>
     <iron-ajax id="cashup"></iron-ajax>
     <iron-ajax id="getTransactions"></iron-ajax>
+    <iron-ajax id="getDeliveryAgent"></iron-ajax>
+    <iron-ajax id="updateBalanceLimits"></iron-ajax>
+    <iron-ajax id="updateAccounts"></iron-ajax>
   </template>
 
   <script>
@@ -125,6 +128,57 @@ Element to consume Ordercloud delivery agent API.
             pagesize: criteria.pageSize || 20
           };
           return this._generateRequest(this.$.getTransactions);
+        },
+
+        /**
+         * Get Delivery Agent
+         *
+         * @param {Number} orgId
+         * @param {Number} agentId
+         *
+         * @return {Promise}
+         */
+        getDeliveryAgent: function(orgId, agentId) {
+          this.$.getDeliveryAgent.url = this._url('delivery_agent/organisation/'+orgId+'/user/'+agentId);
+          return this._generateRequest(this.$.getDeliveryAgent);
+        },
+
+        /**
+         * Update a delivery agents balance limits on which notifications fire
+         *
+         * @param {Number} organisationId
+         * @param {Number} agentId
+         * @param {Number} min
+         * @param {Number} max
+         *
+         * @return {Promise}
+         */
+        updateBalanceLimits: function(organisationId, agentId, min, max) {
+          this.$.updateBalanceLimits.url = this._url('/delivery_agent/'+agentId+'/organisation/'+orgId+'/limits?min='+min+'&max='+max);
+          this.$.updateBalanceLimits.method = "PUT";
+          this.$.updateBalanceLimits.contentType = "application/json";
+          return this._generateRequest(this.$.updateBalanceLimits);
+        },
+
+        /**
+         * Update a delivery agents accounts
+         *
+         * @param {Number} organisationId
+         * @param {Number} agentId
+         * @param {String} bankAccNo
+         * @param {String} cardNo
+         *
+         * @return {Promise}
+         */
+        updateAccounts: function(organisationId, agentId, bankAccNo, cardNo) {
+
+            var formattedBankAccNo = (bankAccNo.length !== 6) ? bankAccNo.slice(-6) : bankAccNo;
+            var formattedCardNo = (cardNo.length !== 4) ? cardNo.slice(-4) : cardNo;
+
+          this.$.updateAccounts.url = this._url('delivery_agent/'+agentId+'/organisation/'+organisationId+'/accounts?bankAccNo='+formattedBankAccNo+'&cardNo='+formattedCardNo);
+          this.$.updateAccounts.method = "PUT";
+          this.$.updateAccounts.contentType = "application/json";
+          return this._generateRequest(this.$.updateAccounts);
         },
 
       });
