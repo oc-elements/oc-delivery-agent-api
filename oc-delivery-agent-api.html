@@ -18,6 +18,7 @@ Element to consume Ordercloud delivery agent API.
     <iron-ajax id="getDeliveryAgent"></iron-ajax>
     <iron-ajax id="updateBalanceLimits"></iron-ajax>
     <iron-ajax id="updateAccounts"></iron-ajax>
+    <iron-ajax id="inviteDeliveryAgent"></iron-ajax>
   </template>
 
   <script>
@@ -35,7 +36,7 @@ Element to consume Ordercloud delivery agent API.
          * @return {Promise}
          */
         getDeliveryAgents: function(organisationId, criteria) {
-          this.$.getDeliveryAgents.url = this._url('organisations/fraud/deliveryagent/{id}');
+          this.$.getDeliveryAgents.url = this._url('delivery_agent/organisation/'+organisationId);
           this.$.getDeliveryAgents.params = {
             page: criteria.page || 1,
             pagesize: criteria.pageSize || 20,
@@ -47,9 +48,10 @@ Element to consume Ordercloud delivery agent API.
         /**
          * Gets a list of balances for all delivery agents for an organisation
          *
+         * @param {Number} organisationId
          * @return {Promise}
          */
-        getDeliveryAgentsWithBalance: function(organisationId, criteria) {
+        getDeliveryAgentsWithBalance: function(organisationId) {
           this.$.getDeliveryAgentsWithBalance.url = this._url('/delivery_agent/balance');
           return this._generateRequest(this.$.getDeliveryAgentsWithBalance);
         },
@@ -179,6 +181,20 @@ Element to consume Ordercloud delivery agent API.
           this.$.updateAccounts.method = "PUT";
           this.$.updateAccounts.contentType = "application/json";
           return this._generateRequest(this.$.updateAccounts);
+        },
+
+        /**
+         * Invites user to be a delivery agent for an organisation
+         *
+         * @param {Number} organisationId
+         * @param {Number} userId
+         * @return {Promise}
+         */
+        inviteDeliveryAgent: function(organisationId, userId) {
+          this.$.inviteDeliveryAgent.url = this._url('/delivery_agent/organisation/'+organisationId+'/invite/user/'+userId);
+          this.$.inviteDeliveryAgent.method = "POST";
+          this.$.inviteDeliveryAgent.contentType = "application/json";
+          return this._generateRequest(this.$.inviteDeliveryAgent);
         },
 
       });
