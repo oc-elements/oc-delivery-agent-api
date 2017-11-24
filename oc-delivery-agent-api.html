@@ -1,10 +1,7 @@
-<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../iron-ajax/iron-ajax.html">
-<link rel="import" href="../oc-core-utils/oc-api-provider-behaviour.html">
+<link rel="import" href="../oc-core-utils/oc-core-utils.html">
 
-<!--
-Element to consume Ordercloud delivery agent API.
--->
 <dom-module id="oc-delivery-agent-api">
 
   <template>
@@ -20,13 +17,20 @@ Element to consume Ordercloud delivery agent API.
     <iron-ajax id="updateAccounts"></iron-ajax>
     <iron-ajax id="inviteDeliveryAgent"></iron-ajax>
   </template>
-
   <script>
-    (function() {
-      Polymer({
-        is: 'oc-delivery-agent-api',
-        behaviors: [OC.Behaviours.ApiProvider],
-
+    /**
+     * `oc-delivery-agent-api`
+     * Delivery Agent api
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class OcDeliveryAgentApi extends Ordercloud.ApiMixin(Polymer.Element) {
+      static get is() { return 'oc-delivery-agent-api'; }
+      static get properties() {
+        return {};
+      }
         /**
          * Retrieve delivery agents for the specified organisation
          *
@@ -35,15 +39,15 @@ Element to consume Ordercloud delivery agent API.
          *
          * @return {Promise}
          */
-        getDeliveryAgents: function(organisationId, criteria) {
-          this.$.getDeliveryAgents.url = this._url('delivery_agent/organisation/'+organisationId);
-          this.$.getDeliveryAgents.params = {
-            page: criteria.page || 1,
-            pagesize: criteria.pageSize || 20,
-            status: criteria.statuses || []
-          };
-          return this._generateRequest(this.$.getDeliveryAgents);
-        },
+        getDeliveryAgents(organisationId, criteria) {
+            this.$.getDeliveryAgents.url = this._url('delivery_agent/organisation/'+organisationId);
+            this.$.getDeliveryAgents.params = {
+                page: criteria.page || 1,
+                pagesize: criteria.pageSize || 20,
+                status: criteria.statuses || []
+            };
+            return this._generateRequest(this.$.getDeliveryAgents);
+        }
 
         /**
          * Gets a list of balances for all delivery agents for an organisation
@@ -51,20 +55,20 @@ Element to consume Ordercloud delivery agent API.
          * @param {Number} organisationId
          * @return {Promise}
          */
-        getDeliveryAgentsWithBalance: function(organisationId) {
-          this.$.getDeliveryAgentsWithBalance.url = this._url('/delivery_agent/balance');
-          return this._generateRequest(this.$.getDeliveryAgentsWithBalance);
-        },
+        getDeliveryAgentsWithBalance(organisationId) {
+            this.$.getDeliveryAgentsWithBalance.url = this._url('/delivery_agent/balance');
+            return this._generateRequest(this.$.getDeliveryAgentsWithBalance);
+        }
 
         /**
          * Gets a list of available statusses for a delivery agent
          *
          * @return {Promise}
          */
-        getAgentStatuses: function() {
-          this.$.getAgentStatuses.url = this._url('/delivery_agent/status');
-          return this._generateRequest(this.$.getAgentStatuses);
-        },
+        getAgentStatuses() {
+            this.$.getAgentStatuses.url = this._url('/delivery_agent/status');
+            return this._generateRequest(this.$.getAgentStatuses);
+        }
 
         /**
          * Update a delivery agents status
@@ -75,12 +79,12 @@ Element to consume Ordercloud delivery agent API.
          *
          * @return {Promise}
          */
-        updateAgentStatus: function(organisationId, agentId, statusId) {
-          this.$.updateAgentStatus.url = this._url('/delivery_agent/'+agentId+'/organisation/'+organisationId+'/status/'+statusId);
-          this.$.updateAgentStatus.method = "PUT";
-          this.$.updateAgentStatus.contentType = "application/json";
-          return this._generateRequest(this.$.updateAgentStatus);
-        },
+        updateAgentStatus(organisationId, agentId, statusId) {
+            this.$.updateAgentStatus.url = this._url('/delivery_agent/'+agentId+'/organisation/'+organisationId+'/status/'+statusId);
+            this.$.updateAgentStatus.method = "PUT";
+            this.$.updateAgentStatus.contentType = "application/json";
+            return this._generateRequest(this.$.updateAgentStatus);
+        }
 
         /**
          * Debit delivery agent with specified amount
@@ -91,12 +95,12 @@ Element to consume Ordercloud delivery agent API.
          *
          * @return {Promise}
          */
-        topup: function(organisationId, agentId, amount) {
-          this.$.topup.url = this._url('/delivery_agent/'+agentId+'/organisation/'+organisationId+'/topup/'+amount);
-          this.$.topup.method = "PUT";
-          this.$.topup.contentType = "application/json";
-          return this._generateRequest(this.$.topup);
-        },
+        topup(organisationId, agentId, amount) {
+            this.$.topup.url = this._url('/delivery_agent/'+agentId+'/organisation/'+organisationId+'/topup/'+amount);
+            this.$.topup.method = "PUT";
+            this.$.topup.contentType = "application/json";
+            return this._generateRequest(this.$.topup);
+        }
 
         /**
          * Credit delivery agent with specified amount
@@ -107,12 +111,12 @@ Element to consume Ordercloud delivery agent API.
          *
          * @return {Promise}
          */
-        cashup: function(organisationId, agentId, amount) {
-          this.$.cashup.url = this._url('/delivery_agent/'+agentId+'/organisation/'+organisationId+'/cashup/'+amount);
-          this.$.cashup.method = "PUT";
-          this.$.cashup.contentType = "application/json";
-          return this._generateRequest(this.$.cashup);
-        },
+        cashup(organisationId, agentId, amount) {
+            this.$.cashup.url = this._url('/delivery_agent/'+agentId+'/organisation/'+organisationId+'/cashup/'+amount);
+            this.$.cashup.method = "PUT";
+            this.$.cashup.contentType = "application/json";
+            return this._generateRequest(this.$.cashup);
+        }
 
         /**
          * Retrieve transactions for a delivery agent, with the given parameters
@@ -123,14 +127,14 @@ Element to consume Ordercloud delivery agent API.
          *
          * @return {Promise}
          */
-        getTransactions: function(organisationId, agentId, criteria) {
-          this.$.getTransactions.url = this._url('delivery_agent/'+agentId+'/organisation/'+organisationId+'/transactions');
-          this.$.getTransactions.params = {
-            page: criteria.page || 1,
-            pagesize: criteria.pageSize || 20
-          };
-          return this._generateRequest(this.$.getTransactions);
-        },
+        getTransactions(organisationId, agentId, criteria) {
+            this.$.getTransactions.url = this._url('delivery_agent/'+agentId+'/organisation/'+organisationId+'/transactions');
+            this.$.getTransactions.params = {
+                page: criteria.page || 1,
+                pagesize: criteria.pageSize || 20
+            };
+            return this._generateRequest(this.$.getTransactions);
+        }
 
         /**
          * Get Delivery Agent
@@ -140,10 +144,10 @@ Element to consume Ordercloud delivery agent API.
          *
          * @return {Promise}
          */
-        getDeliveryAgent: function(orgId, agentId) {
-          this.$.getDeliveryAgent.url = this._url('delivery_agent/organisation/'+orgId+'/user/'+agentId);
-          return this._generateRequest(this.$.getDeliveryAgent);
-        },
+        getDeliveryAgent(orgId, agentId) {
+            this.$.getDeliveryAgent.url = this._url('delivery_agent/organisation/'+orgId+'/user/'+agentId);
+            return this._generateRequest(this.$.getDeliveryAgent);
+        }
 
         /**
          * Update a delivery agents balance limits on which notifications fire
@@ -155,12 +159,12 @@ Element to consume Ordercloud delivery agent API.
          *
          * @return {Promise}
          */
-        updateBalanceLimits: function(organisationId, agentId, min, max) {
-          this.$.updateBalanceLimits.url = this._url('/delivery_agent/'+agentId+'/organisation/'+organisationId+'/limits?min='+min+'&max='+max);
-          this.$.updateBalanceLimits.method = "PUT";
-          this.$.updateBalanceLimits.contentType = "application/json";
-          return this._generateRequest(this.$.updateBalanceLimits);
-        },
+        updateBalanceLimits(organisationId, agentId, min, max) {
+            this.$.updateBalanceLimits.url = this._url('/delivery_agent/'+agentId+'/organisation/'+organisationId+'/limits?min='+min+'&max='+max);
+            this.$.updateBalanceLimits.method = "PUT";
+            this.$.updateBalanceLimits.contentType = "application/json";
+            return this._generateRequest(this.$.updateBalanceLimits);
+        }
 
         /**
          * Update a delivery agents accounts
@@ -172,16 +176,16 @@ Element to consume Ordercloud delivery agent API.
          *
          * @return {Promise}
          */
-        updateAccounts: function(organisationId, agentId, bankAccNo, cardNo) {
+        updateAccounts(organisationId, agentId, bankAccNo, cardNo) {
 
-          var formattedBankAccNo = (bankAccNo.length !== 6) ? bankAccNo.slice(-6) : bankAccNo;
-          var formattedCardNo = (cardNo.length !== 4) ? cardNo.slice(-4) : cardNo;
+            var formattedBankAccNo = (bankAccNo.length !== 6) ? bankAccNo.slice(-6) : bankAccNo;
+            var formattedCardNo = (cardNo.length !== 4) ? cardNo.slice(-4) : cardNo;
 
-          this.$.updateAccounts.url = this._url('delivery_agent/'+agentId+'/organisation/'+organisationId+'/accounts?bankAccNo='+formattedBankAccNo+'&cardNo='+formattedCardNo);
-          this.$.updateAccounts.method = "PUT";
-          this.$.updateAccounts.contentType = "application/json";
-          return this._generateRequest(this.$.updateAccounts);
-        },
+            this.$.updateAccounts.url = this._url('delivery_agent/'+agentId+'/organisation/'+organisationId+'/accounts?bankAccNo='+formattedBankAccNo+'&cardNo='+formattedCardNo);
+            this.$.updateAccounts.method = "PUT";
+            this.$.updateAccounts.contentType = "application/json";
+            return this._generateRequest(this.$.updateAccounts);
+        }
 
         /**
          * Invites user to be a delivery agent for an organisation
@@ -190,15 +194,15 @@ Element to consume Ordercloud delivery agent API.
          * @param {Number} userId
          * @return {Promise}
          */
-        inviteDeliveryAgent: function(organisationId, userId) {
-          this.$.inviteDeliveryAgent.url = this._url('/delivery_agent/organisation/'+organisationId+'/invite/user/'+userId);
-          this.$.inviteDeliveryAgent.method = "POST";
-          this.$.inviteDeliveryAgent.contentType = "application/json";
-          return this._generateRequest(this.$.inviteDeliveryAgent);
-        },
+        inviteDeliveryAgent(organisationId, userId) {
+            this.$.inviteDeliveryAgent.url = this._url('/delivery_agent/organisation/'+organisationId+'/invite/user/'+userId);
+            this.$.inviteDeliveryAgent.method = "POST";
+            this.$.inviteDeliveryAgent.contentType = "application/json";
+            return this._generateRequest(this.$.inviteDeliveryAgent);
+        }
 
-      });
-    })();
+    }
+
+    window.customElements.define(OcDeliveryAgentApi.is, OcDeliveryAgentApi);
   </script>
-
 </dom-module>
